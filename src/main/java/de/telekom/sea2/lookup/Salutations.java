@@ -1,3 +1,4 @@
+package de.telekom.sea2.lookup;
 public enum Salutations {
 	MR, MRS, OTHER;
 
