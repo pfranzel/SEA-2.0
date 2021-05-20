@@ -178,7 +178,7 @@ public class Menu implements Closeable {
 	}
 
 	private void getAllPerson() {
-		// private -list all configured/read persons
+/*		// private -list all configured/read persons
 		if (personRepo.size() == 0) {
 			System.out.println("You have an empty list!");
 		} else {
@@ -195,8 +195,11 @@ public class Menu implements Closeable {
 				i++;
 				j++;
 			}
-		}
-	}
+		}*/
+		personRepo.getAll();
+	} 
+	
+	
 	private void getById() {
 		// private - Scanner for new person
 		String input;

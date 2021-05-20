@@ -2,25 +2,24 @@ package de.telekom.sea2.persistence;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
+import de.telekom.sea2.lookup.Salutation;
 import de.telekom.sea2.model.Person;
 
 public class PersonsRepository {
-	
+
 	private DBConnect dbconn;
 	private String sql;
 
-	public PersonsRepository(DBConnect conn) {	
+	public PersonsRepository(DBConnect conn) {
 		this.dbconn = conn;
 	}
-	
+
 	public boolean create(Person p) {
 		try {
 			DBConnect dbconn = new DBConnect();
-			Statement statement = dbconn.getConnection().createStatement();
+//			Statement statement = dbconn.getConnection().createStatement();
 
 			PreparedStatement preparedStatement = dbconn.getConnection()
 					.prepareStatement("INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)");
@@ -53,7 +52,7 @@ public class PersonsRepository {
 		try {
 			DBConnect dbconn = new DBConnect();
 			dbconn.getConnection().prepareStatement(sql).executeQuery();
-			System.out.println("Table " + db + "truncated!");
+			System.out.println("Table persons truncated!");
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -69,16 +68,17 @@ public class PersonsRepository {
 		return null;
 	}
 
-	public long size() {
-		sql = "select count(*) from persons";
+	public long getSize() {
+
+		sql = "select count(*) AS total FROM persons";
+
 		try {
 			DBConnect dbconn = new DBConnect();
-			ResultSet result = dbconn.getConnection().prepareStatement(sql).executeQuery();
-			int i = result.getFetchSize();
-
-			System.out.println(i);
+			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
+			resultSet.next();
+			System.out.println("Size: " + resultSet.getInt("total"));
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("getSize Exception: " + e);
 		}
 		return 0;
 	}
@@ -89,8 +89,15 @@ public class PersonsRepository {
 
 		try {
 			DBConnect dbconn = new DBConnect();
-//			dbconn.getConnection().prepareStatement(sql);
-			dbconn.getConnection().prepareStatement(sql).executeQuery();
+			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
+			System.out.println("ID\tSalutation\tFirstname\tLastname");
+			while (resultSet.next()) {
+				System.out.print(resultSet.getInt(1) + "\t");
+				System.out.print(Salutation.fromByte(resultSet.getByte(2)) + "\t\t");
+//				System.out.print(resultSet.getInt(2) + "\t\t");
+				System.out.print(resultSet.getString(3) + "\t\t");
+				System.out.println(resultSet.getString(4) + " ");
+			}
 
 		} catch (Exception e) {
 			System.out.println(e);
