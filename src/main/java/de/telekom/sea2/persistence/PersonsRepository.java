@@ -53,6 +53,7 @@ public class PersonsRepository {
 		try {
 			DBConnect dbconn = new DBConnect();
 			dbconn.getConnection().prepareStatement(sql).executeQuery();
+			System.out.println("Table " + db + "truncated!");
 		} catch (Exception e) {
 			System.out.println(e);
 		}

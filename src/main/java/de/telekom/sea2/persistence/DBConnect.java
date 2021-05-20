@@ -30,11 +30,4 @@ public class DBConnect {
 		System.out.println("getConnection: Not connected; End");
 		return null;
 	}
-	
-//	public Connection createStatement(String sql) {
-//		System.out.println("createStatement: Start");
-//		
-//		return null;
-//}
-
 }
