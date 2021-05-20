@@ -173,8 +173,11 @@ public class Menu implements Closeable {
 	}
 	
 	private void removeAll() {
-		// private -list all configured/read persons
-		personRepo.deleteAll();
+		if (personRepo.deleteAll()) {
+			System.out.println("Table truncated - it is now empty");
+		} else {
+			System.out.println("Something went wrong, please check if table exist");
+		}
 	}
 
 	private void getAllPerson() {
