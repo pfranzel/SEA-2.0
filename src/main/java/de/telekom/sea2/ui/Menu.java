@@ -2,6 +2,7 @@ package de.telekom.sea2.ui;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 import de.telekom.sea2.lookup.Salutation;
@@ -40,20 +41,20 @@ public class Menu implements Closeable {
 	private void showMenu() {
 		// private - Show choices and exit/continue
 		System.out.println();
-		System.out.println("************ Menu ************* ");
-		System.out.println("*                             * ");
+		System.out.println("***************** Menu **************** ");
+		System.out.println("*                                     * ");
 		if (addActive == true)
-			System.out.println("* (1) Add Person              *");
-		System.out.println("* (2) Delete by ID            *");
-		System.out.println("* (3) List Persons            *");
-		System.out.println("* (4) Truncate Table (delAll) *");
-		System.out.println("* (5) Search by ID            *");
-		System.out.println("*                             *");
-		System.out.println("* (9) Generate Testdata       *");
-		System.out.println("*                             *");
-		System.out.println("* (q) Quit                    *");
-		System.out.println("*                             *");
-		System.out.println("*******************************");
+			System.out.println("* (1) Add Person                      *");
+		System.out.println("* (2) Search person by ID             *");
+		System.out.println("* (3) List all persons                *");
+		System.out.println("* (4) Delete by ID                    *");
+		System.out.println("* (5) Delete all (truncate table      *");
+		System.out.println("*                                     *");
+		System.out.println("* (9) Generate Testdata               *");
+		System.out.println("*                                     *");
+		System.out.println("* (q) Quit                            *");
+		System.out.println("*                                     *");
+		System.out.println("***************************************");
 //		keepAsking(result);
 	}
 
@@ -68,16 +69,16 @@ public class Menu implements Closeable {
 			inputPerson();
 			break;
 		case "2":
-			removePerson();
+			getById();
 			break;
 		case "3":
 			getAllPerson();
 			break;
 		case "4":
-			removeAll();
+			removePerson();
 			break;
 		case "5":
-			getById();
+			removeAll();
 			break;
 		case "9":
 			genTestData();
@@ -160,7 +161,12 @@ public class Menu implements Closeable {
 		System.out.println();
 		System.out.println("Please enter ID to delete: ");
 		int id = scanner.nextInt();
+		
+		if ()
+		
+		
 		boolean success = personRepo.delete(id);
+		
 		if (success) {
 			System.out.println();
 			System.out.println("--> ID: \"" + id + "\" deleted successful!");
@@ -181,29 +187,15 @@ public class Menu implements Closeable {
 	}
 
 	private void getAllPerson() {
-/*		// private -list all configured/read persons
-		if (personRepo.size() == 0) {
-			System.out.println("You have an empty list!");
-		} else {
-			int i = 0;
-			int j = 0;
-			while (i < personRepo.size()) {
-				if (personRepo.get(j) != null) {
-					Person p = (Person) personRepo.get(j);
-					System.out.println("---> ID: " + p.getId() + " - Element: " + j + ".) " + p.getSalutation() + " - "
-							+ p.getFirstname() + " " + p.getLastname());
-				} else {
-					i--;
-				}
-				i++;
-				j++;
-			}
-		}*/
-		personRepo.getAll();
+		System.out.println("### \tID \tSalu \tFirstname \tLastname" );
+		List<Person> personlist = personRepo.getAll();
+		for (Person item : personlist) {   
+		    System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname() + "\t\t" + item.getLastname());
+		}
 	} 
 	
 	
-	private void getById() {
+	private boolean getById() {
 		// private - Scanner for new person
 		String input;
 		System.out.println("Please enter ID to show: ");
@@ -211,14 +203,15 @@ public class Menu implements Closeable {
 		int id = Integer.parseInt(input);
 
 		try {
-			Person person = (Person) personRepo.get(id);
-			System.out.println("You selected - " + id + ": " + person.getFirstname() + " " + person.getLastname());
+//			System.out.println("You selected  ID - " + id);
+//			Person person = (Person) personRepo.get(id);
+			personRepo.get(id);
+			return true;
 		} catch (Exception e) {
-			System.out.println("Your requested id does not exist - please check!");
-			getById();
-		} /*
-			 * finally { System.out.println("Finally..."); }
-			 */
+			System.out.println("Your requested ID - " + id + " - does not exist - please check!");
+		//	getById();
+		} 
+		return false;
 	}
 
 

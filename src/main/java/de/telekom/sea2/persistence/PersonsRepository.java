@@ -2,7 +2,6 @@ package de.telekom.sea2.persistence;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 import de.telekom.sea2.lookup.Salutation;
@@ -10,10 +9,11 @@ import de.telekom.sea2.model.Person;
 
 public class PersonsRepository {
 
-	private DBConnect dbconn;
 	private String sql;
 	private int id;
-	private int lastId;
+	private DBConnect dbconn;
+
+//	 DBConnect dbconn = new DBConnect();
 
 	public PersonsRepository(DBConnect conn) {
 		this.dbconn = conn;
@@ -22,20 +22,19 @@ public class PersonsRepository {
 	public boolean create(Person p) {
 
 		try {
-			
-			DBConnect dbconn = new DBConnect();
-			ResultSet resultSet = dbconn.getConnection().prepareStatement("SELECT id FROM persons ORDER BY id DESC LIMIT 1").executeQuery();
+
+			ResultSet resultSet = dbconn.getConnection()
+					.prepareStatement("SELECT id FROM persons ORDER BY id DESC LIMIT 1").executeQuery();
 			resultSet.next();
 			System.out.println("lastId: " + resultSet.getInt("id"));
 		} catch (Exception e) {
 			System.out.println("It seams you are the first in the list - beginning with ID 0 ");
-			lastId++;
 		}
 
-		System.out.println("lastIdffff: " + lastId);
 		try {
 
-			DBConnect dbconn = new DBConnect();
+//			DBConnect dbconn = new DBConnect();
+
 			PreparedStatement preparedStatement = dbconn.getConnection()
 					.prepareStatement("INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)");
 			p.setId(id);
@@ -56,6 +55,25 @@ public class PersonsRepository {
 		return false;
 	}
 
+	public boolean delete(long id) {
+		sql = "DELETE FROM persons WHERE id=?";
+
+		try {
+			System.out.println("IDDDDDD:" + get(id));
+//			if (get(id) == null) {
+//				System.out.println("ID " + id + " does not exist");
+//			} else {
+			PreparedStatement delete = dbconn.getConnection().prepareStatement(sql);
+			delete.setLong(1, id);
+			delete.execute();
+			return true;
+//			}
+		} catch (Exception e) {
+			System.out.println("Delete failed: " + e);
+		}
+		return false;
+	}
+
 	public boolean delete(Person p) {
 		long id = p.getId();
 		delete(id);
@@ -63,9 +81,8 @@ public class PersonsRepository {
 	}
 
 	public boolean deleteAll() {
-		sql = "truncate table persons";
+		sql = "TRUNCATE TABLE persons";
 		try {
-			DBConnect dbconn = new DBConnect();
 			dbconn.getConnection().prepareStatement(sql).executeQuery();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -73,14 +90,11 @@ public class PersonsRepository {
 		return true;
 	}
 
-	public boolean delete(long id) {
-		return false;
-	}
-
 	public Person get(long id) {
+
 		sql = "SELECT * FROM persons WHERE id = " + id;
+
 		try {
-			DBConnect dbconn = new DBConnect();
 			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
 			System.out.println();
 			System.out.println("ID\tSalutation\tFirstname\tLastname");
@@ -102,7 +116,6 @@ public class PersonsRepository {
 		sql = "select count(*) AS total FROM persons";
 
 		try {
-			DBConnect dbconn = new DBConnect();
 			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
 			resultSet.next();
 			System.out.println("Size: " + resultSet.getInt("total"));
@@ -115,23 +128,22 @@ public class PersonsRepository {
 	public ArrayList<Person> getAll() {
 
 		sql = "select * from persons";
-
 		try {
-			DBConnect dbconn = new DBConnect();
 			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
-			System.out.println();
-			System.out.println("ID\tSalutation\tFirstname\tLastname");
+			ArrayList<Person> personlist = new ArrayList<Person>();
 			while (resultSet.next()) {
-				System.out.print(resultSet.getInt(1) + "\t");
-				System.out.print(Salutation.fromByte(resultSet.getByte(2)) + "\t\t");
-				System.out.print(resultSet.getString(3) + "\t\t");
-				System.out.println(resultSet.getString(4) + " ");
+				personlist.add(new Person(
+						resultSet.getLong(1), 
+						resultSet.getString(3), 
+						resultSet.getString(4),
+						Salutation.fromByte(resultSet.getByte(2))));
 			}
-
+			dbconn.close();
+			return personlist;
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-
 		return null;
 	}
+
 }
