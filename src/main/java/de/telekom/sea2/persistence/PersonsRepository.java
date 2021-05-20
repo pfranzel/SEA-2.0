@@ -10,7 +10,7 @@ import de.telekom.sea2.model.Person;
 public class PersonsRepository {
 
 	private String sql;
-	private int id;
+	private long id = getSize();
 	private DBConnect dbconn;
 
 //	 DBConnect dbconn = new DBConnect();
@@ -27,13 +27,14 @@ public class PersonsRepository {
 					.prepareStatement("SELECT id FROM persons ORDER BY id DESC LIMIT 1").executeQuery();
 			resultSet.next();
 			System.out.println("lastId: " + resultSet.getInt("id"));
+			id = resultSet.getInt("id")+1;
+			dbconn.close();
 		} catch (Exception e) {
-			System.out.println("It seams you are the first in the list - beginning with ID 0 ");
+			System.out.println("It seems you are the first in the list - beginning with ID 0 ");
+			id = 0;
 		}
 
 		try {
-
-//			DBConnect dbconn = new DBConnect();
 
 			PreparedStatement preparedStatement = dbconn.getConnection()
 					.prepareStatement("INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)");
@@ -45,6 +46,7 @@ public class PersonsRepository {
 			preparedStatement.execute();
 			preparedStatement.close();
 			id++;
+			dbconn.close();
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
@@ -66,6 +68,7 @@ public class PersonsRepository {
 			PreparedStatement delete = dbconn.getConnection().prepareStatement(sql);
 			delete.setLong(1, id);
 			delete.execute();
+			dbconn.close();
 			return true;
 //			}
 		} catch (Exception e) {
@@ -84,6 +87,7 @@ public class PersonsRepository {
 		sql = "TRUNCATE TABLE persons";
 		try {
 			dbconn.getConnection().prepareStatement(sql).executeQuery();
+			dbconn.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -101,10 +105,10 @@ public class PersonsRepository {
 			while (resultSet.next()) {
 				System.out.print(resultSet.getInt(1) + "\t");
 				System.out.print(Salutation.fromByte(resultSet.getByte(2)) + "\t\t");
-//				System.out.print(resultSet.getInt(2) + "\t\t");
 				System.out.print(resultSet.getString(3) + "\t\t");
 				System.out.println(resultSet.getString(4) + " ");
 			}
+			dbconn.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -119,6 +123,7 @@ public class PersonsRepository {
 			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
 			resultSet.next();
 			System.out.println("Size: " + resultSet.getInt("total"));
+			dbconn.close();
 		} catch (Exception e) {
 			System.out.println("getSize Exception: " + e);
 		}

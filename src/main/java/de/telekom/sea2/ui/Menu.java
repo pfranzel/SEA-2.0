@@ -19,16 +19,16 @@ public class Menu implements Closeable {
 	public void setRepository(PersonsRepository repo) {
 		personRepo = repo;
 	}
-	
+
 	public void open() {
 		scanner = new Scanner(System.in);
 	}
-	
+
 	private String inputMenu() {
 		return scanner.nextLine();
 		// private - Scanner for User Input
 	}
-	
+
 	public void keepAsking() {
 		// public - hällt die Schleife bis zum Abbruch am Leben
 		do {
@@ -37,7 +37,7 @@ public class Menu implements Closeable {
 			checkMenu(result);
 		} while (!result.equals("q"));
 	}
-	
+
 	private void showMenu() {
 		// private - Show choices and exit/continue
 		System.out.println();
@@ -96,7 +96,7 @@ public class Menu implements Closeable {
 		inputTestdata("Agata", "Rubin", Salutation.MRS);
 		inputTestdata("Peter", "Franzel", Salutation.MR);
 	}
-	
+
 	private void inputTestdata(String firstname, String lastname, Salutation salutation) {
 		// private - Scanner for new person
 
@@ -117,7 +117,7 @@ public class Menu implements Closeable {
 			inputPerson();
 		}
 	}
-	
+
 	private void inputPerson() {
 		// private - Scanner for new person
 		String firstname;
@@ -154,7 +154,7 @@ public class Menu implements Closeable {
 			inputPerson();
 		}
 	}
-	
+
 	private void removePerson() {
 		System.out.println();
 		getAllPerson();
@@ -177,7 +177,7 @@ public class Menu implements Closeable {
 		}
 		scanner.nextLine();
 	}
-	
+
 	private void removeAll() {
 		if (personRepo.deleteAll()) {
 			System.out.println("Table truncated - it is now empty");
@@ -187,14 +187,18 @@ public class Menu implements Closeable {
 	}
 
 	private void getAllPerson() {
-		System.out.println("### \tID \tSalu \tFirstname \tLastname" );
 		List<Person> personlist = personRepo.getAll();
-		for (Person item : personlist) {   
-		    System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname() + "\t\t" + item.getLastname());
+		if (!personlist.isEmpty()) {
+			System.out.println("### \tID \tSalu \tFirstname \tLastname");
+			for (Person item : personlist) {
+				System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname()
+						+ "\t\t" + item.getLastname());
+			}
+		} else {
+			System.out.println("The current has no entries!");
 		}
-	} 
-	
-	
+	}
+
 	private boolean getById() {
 		// private - Scanner for new person
 		String input;
@@ -209,20 +213,18 @@ public class Menu implements Closeable {
 			return true;
 		} catch (Exception e) {
 			System.out.println("Your requested ID - " + id + " - does not exist - please check!");
-		//	getById();
-		} 
+			// getById();
+		}
 		return false;
 	}
-
-
 
 //	public void setRepo(PersonsRepository repo) {
 //		this.repo = repo; // public - gibt die Administration-DB dem Menü bekannt
 //	}
-	
+
 	@Override
 	public void close() throws IOException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
