@@ -1,8 +1,8 @@
 package de.telekom.sea2.lookup;
-public enum Salutations {
+public enum Salutation {
 	MR, MRS, OTHER;
 
-	public static Salutations fromString(final String value) {
+	public static Salutation fromString(final String value) {
 
 		switch (value.toUpperCase()) {
 
@@ -40,5 +40,5 @@ public enum Salutations {
 		default:
 			throw new IllegalArgumentException("Unexpected Case - please check...");
 		}
-	}
+	} 
 }

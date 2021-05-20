@@ -1,10 +1,14 @@
 package de.telekom.sea2.persistence;
 
+import java.sql.Connection;
+import java.util.List;
+
 import de.telekom.sea2.model.Person;
 
 public class PersonsRepository {
 
 	public boolean create(Person p) {
+		
 		return false;
 	}
 
@@ -25,6 +29,7 @@ public class PersonsRepository {
 	}
 	
 	public Person get(long id) {
+		
 		return null;
 	}
 
