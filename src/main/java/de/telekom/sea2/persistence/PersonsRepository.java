@@ -1,5 +1,6 @@
 package de.telekom.sea2.persistence;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -9,26 +10,22 @@ import de.telekom.sea2.model.Person;
 
 public class PersonsRepository {
 
-	private String sql;
 	private long id = getSize();
-	private DBConnect dbconn;
+//	private DBConnect dbconn;
+	private Connection mydbconn;
 
-//	 DBConnect dbconn = new DBConnect();
-
-	public PersonsRepository(DBConnect conn) {
-		this.dbconn = conn;
+	public PersonsRepository(Connection mydbconn) {
+		this.mydbconn = mydbconn;
 	}
 
 	public boolean create(Person p) {
 
 		try {
 
-			ResultSet resultSet = dbconn.getConnection()
-					.prepareStatement("SELECT id FROM persons ORDER BY id DESC LIMIT 1").executeQuery();
+			ResultSet resultSet = mydbconn.prepareStatement("SELECT id FROM persons ORDER BY id DESC LIMIT 1").executeQuery();
 			resultSet.next();
 			System.out.println("lastId: " + resultSet.getInt("id"));
-			id = resultSet.getInt("id")+1;
-			dbconn.close();
+			id = resultSet.getInt("id") + 1;
 		} catch (Exception e) {
 			System.out.println("It seems you are the first in the list - beginning with ID 0 ");
 			id = 0;
@@ -36,8 +33,7 @@ public class PersonsRepository {
 
 		try {
 
-			PreparedStatement preparedStatement = dbconn.getConnection()
-					.prepareStatement("INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)");
+			PreparedStatement preparedStatement = mydbconn.prepareStatement("INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)");
 			p.setId(id);
 			preparedStatement.setLong(1, p.getId());
 			preparedStatement.setByte(2, p.getSalutation().toByte());
@@ -46,7 +42,6 @@ public class PersonsRepository {
 			preparedStatement.execute();
 			preparedStatement.close();
 			id++;
-			dbconn.close();
 		} catch (Exception e) {
 			System.out.println("Error: " + e);
 		}
@@ -54,31 +49,27 @@ public class PersonsRepository {
 	}
 
 	public boolean update(Person p) {
-		
-		sql = "UPDATE persons SET salutation=?, firstname=?, lastname=? WHERE id=?";
+		String sql = "UPDATE persons SET salutation=?, firstname=?, lastname=? WHERE id=?";
 
-		
 		return false;
 	}
 
 	public boolean delete(long id) {
-		
+		String sql;
 		sql = "DELETE FROM persons WHERE id=?";
 
-		try {
-	//		System.out.println("IDDDDDD:" + get(id).getId());
-	//		if (get(id) != null) {
-	//			System.out.println("ID " + id + " does not exist");
-	//		} else {
-			PreparedStatement delete = dbconn.getConnection().prepareStatement(sql);
+		if (get(id) == null) {
+			return false;
+		}
+		try (PreparedStatement delete = mydbconn.prepareStatement(sql)) {
 			delete.setLong(1, id);
 			delete.execute();
-			dbconn.close();
 			return true;
-	//		}
 		} catch (Exception e) {
 			System.out.println("Delete failed: " + e);
-		}
+			System.out.println(e.getLocalizedMessage());
+			e.printStackTrace();
+}
 		return false;
 	}
 
@@ -89,10 +80,11 @@ public class PersonsRepository {
 	}
 
 	public boolean deleteAll() {
-		sql = "TRUNCATE TABLE persons";
+		
+		String sql = "TRUNCATE TABLE persons";
+		
 		try {
-			dbconn.getConnection().prepareStatement(sql).executeQuery();
-			dbconn.close();
+			mydbconn.prepareStatement(sql).executeQuery();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -101,50 +93,45 @@ public class PersonsRepository {
 
 	public Person get(long id) {
 
-		sql = "SELECT * FROM persons WHERE id = " + id;
+		String sql = "SELECT * FROM persons WHERE id = " + id;
 
 		try {
-			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
+			ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery();
 			while (resultSet.next()) {
-				Person p = new Person(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), Salutation.fromByte(resultSet.getByte(2)) );
+				Person p = new Person(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4),
+						Salutation.fromByte(resultSet.getByte(2)));
 				return p;
 			}
-			dbconn.close();
 		} catch (Exception e) {
-			System.out.println(e);
+			System.out.println("get(long id) Exception: " + e);
 		}
 		return null;
 	}
 
 	public long getSize() {
 
-		sql = "select count(*) AS total FROM persons";
+		String sql = "select count(*) AS total FROM persons";
 
 		try {
-			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
+			ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery();
 			resultSet.next();
 			System.out.println("Size: " + resultSet.getInt("total"));
-			dbconn.close();
 		} catch (Exception e) {
-			System.out.println("getSize Exception: " + e);
+			System.out.println("getSize() Exception: " + e);
 		}
 		return 0;
 	}
 
 	public ArrayList<Person> getAll() {
 
-		sql = "select * from persons";
+		String sql = "select * from persons";
 		try {
-			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
+			ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery();
 			ArrayList<Person> plist = new ArrayList<Person>();
 			while (resultSet.next()) {
-				plist.add(new Person(
-						resultSet.getLong(1), 
-						resultSet.getString(3), 
-						resultSet.getString(4),
+				plist.add(new Person(resultSet.getLong(1), resultSet.getString(3), resultSet.getString(4),
 						Salutation.fromByte(resultSet.getByte(2))));
 			}
-			dbconn.close();
 			return plist;
 		} catch (Exception e) {
 			System.out.println(e);

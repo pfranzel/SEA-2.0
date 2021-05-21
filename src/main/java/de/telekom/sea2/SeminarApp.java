@@ -1,5 +1,7 @@
 package de.telekom.sea2;
 
+import java.sql.Connection;
+
 import de.telekom.sea2.persistence.DBConnect;
 import de.telekom.sea2.persistence.PersonsRepository;
 import de.telekom.sea2.ui.Menu;
@@ -16,11 +18,12 @@ class SeminarApp {
 		try (Menu menu = new Menu()) {
 
 			DBConnect dbconn = new DBConnect();
+			Connection mydbconn = dbconn.getConnection();
 			menu.open();
-			personRepo = new PersonsRepository(dbconn);
+			personRepo = new PersonsRepository(mydbconn);
 			menu.setRepository(personRepo);
 			menu.keepAsking();
-
+			dbconn.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}

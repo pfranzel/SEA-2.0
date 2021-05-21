@@ -48,7 +48,7 @@ public class Menu implements Closeable {
 		System.out.println("* (2) Search person by ID             *");
 		System.out.println("* (3) List all persons                *");
 		System.out.println("* (4) Delete by ID                    *");
-		System.out.println("* (5) Delete all (truncate table      *");
+		System.out.println("* (5) Delete all (truncate table)     *");
 		System.out.println("*                                     *");
 		System.out.println("* (9) Generate Testdata               *");
 		System.out.println("*                                     *");
