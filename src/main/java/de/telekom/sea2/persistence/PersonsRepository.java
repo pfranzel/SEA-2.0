@@ -3,6 +3,7 @@ package de.telekom.sea2.persistence;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import de.telekom.sea2.lookup.Salutation;
@@ -10,16 +11,17 @@ import de.telekom.sea2.model.Person;
 
 public class PersonsRepository {
 
-	private long id = getSize();
 //	private DBConnect dbconn;
+	private long id;
 	private Connection mydbconn;
 
 	public PersonsRepository(Connection mydbconn) {
 		this.mydbconn = mydbconn;
 	}
 
-	public boolean create(Person p) {
-
+	public boolean create(Person p) throws SQLException {
+		
+		id = getSize();
 		String sql = "SELECT id FROM persons ORDER BY id DESC LIMIT 1";
 		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			resultSet.next();
@@ -46,7 +48,7 @@ public class PersonsRepository {
 		return false;
 	}
 
-	public boolean update(Person p) {
+	public boolean update(Person p) throws SQLException {
 
 		String sql = "UPDATE persons SET salutation=?, firstname=?, lastname=? WHERE id=?";
 		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)) {
@@ -65,7 +67,7 @@ public class PersonsRepository {
 		return false;
 	}
 
-	public boolean delete(long id) {
+	public boolean delete(long id) throws SQLException {
 		String sql;
 		sql = "DELETE FROM persons WHERE id=?";
 
@@ -84,7 +86,7 @@ public class PersonsRepository {
 		return false;
 	}
 
-	public boolean delete(Person p) {
+	public boolean delete(Person p) throws SQLException {
 		long id = p.getId();
 		delete(id);
 		return false;
@@ -102,7 +104,7 @@ public class PersonsRepository {
 		return true;
 	}
 
-	public Person get(long id) {
+	public Person get(long id) throws SQLException {
 
 		String sql = "SELECT * FROM persons WHERE id = " + id;
 
@@ -125,13 +127,13 @@ public class PersonsRepository {
 		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			resultSet.next();
 			System.out.println("Size: " + resultSet.getInt("total"));
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			System.out.println("getSize() Exception: " + e);
 		}
 		return 0;
 	}
 
-	public ArrayList<Person> getAll() {
+	public ArrayList<Person> getAll() throws SQLException {
 
 		String sql = "select * from persons";
 		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {

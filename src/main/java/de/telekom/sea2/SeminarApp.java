@@ -24,8 +24,10 @@ class SeminarApp {
 			menu.setRepository(personRepo);
 			menu.keepAsking();
 			dbconn.close();
+			
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 }

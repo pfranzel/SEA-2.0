@@ -2,6 +2,7 @@ package de.telekom.sea2.ui;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -59,6 +60,7 @@ public class Menu implements Closeable {
 	}
 
 	private void checkMenu(String input) {
+		// private - case evaluation
 		switch (input) {
 		case "1":
 			if (addActive == false) {
@@ -97,37 +99,41 @@ public class Menu implements Closeable {
 		String lastname;
 		Salutation salutation = null;
 		Person p = null;
-		long id ;
+		long id;
 
 		System.out.println();
-		
+
 		try {
 			System.out.println("Which Person/ID you want to update?");
 			System.out.println("Please enter ID: ");
-	//		long id = scanner.nextLong();    // shit - newline keeps in the buffer and next nextLine failes...
+			// long id = scanner.nextLong(); // shit - newline keeps in the buffer and next
+			// nextLine failes...
 			id = Long.parseLong(scanner.nextLine());
-			 p = personRepo.get(id);
+			p = personRepo.get(id);
 			if (p.getFirstname() != null) {
 				System.out.println("###########################################################");
 				System.out.println("# You selected:                                           #");
 				System.out.println("#                                                         #");
 				System.out.println("#   \tID \tSalu \tFirstname \tLastname");
 				System.out.println("#----------------------------------------------------------");
-				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname()
-				+ "\t\t" + p.getLastname());
+				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname() + "\t\t"
+						+ p.getLastname());
 			}
 		} catch (IllegalArgumentException e) {
 			System.out.println("Format not valid - please use numeric format");
 			e.printStackTrace();
-		} 
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		try {
 			System.out.println("Please enter new salutation (m/f/d): ");
 			salutation = Salutation.fromString(scanner.nextLine());
 			System.out.println("Please enter the firstname: ");
-				firstname = scanner.nextLine();
+			firstname = scanner.nextLine();
 			System.out.println("Please enter the lastame: ");
-				lastname = scanner.nextLine();
+			lastname = scanner.nextLine();
 			if (salutation.toString().isEmpty()) {
 				throw new NullPointerException("Salutation cannot be blank.");
 			} else if (firstname.isEmpty()) {
@@ -137,17 +143,18 @@ public class Menu implements Closeable {
 			} else {
 				p.setFirstname(firstname);
 				p.setLastname(lastname);
-				p.setSalutation(salutation);			
+				p.setSalutation(salutation);
 				personRepo.update(p);
 				System.out.println("You added \"" + salutation + " " + firstname + " " + lastname + "\" to the list");
 			}
 		} catch (Exception npe) {
 			System.out.println("Something went wrong - " + npe.getMessage());
 			npe.printStackTrace();
-		}		
+		}
 	}
 
 	private void inputPerson() {
+		// private - Scanner for new person
 		String firstname;
 		String lastname;
 		Salutation salutation = null;
@@ -178,6 +185,9 @@ public class Menu implements Closeable {
 		} catch (NullPointerException npe) {
 			System.out.println("Something went wrong - " + npe.getMessage());
 			inputPerson();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -188,17 +198,23 @@ public class Menu implements Closeable {
 		System.out.println("Please enter ID to delete: ");
 		long id = scanner.nextLong();
 
-		boolean success = personRepo.delete(id);
+		boolean success;
+		try {
+			success = personRepo.delete(id);
 
-		if (success) {
-			System.out.println();
-			System.out.println("--> ID: \"" + id + "\" deleted successful!");
-			System.out.println();
-		} else {
-			System.out.println();
-			System.out.println("Deletion of ID: " + id + " not successful");
+			if (success) {
+				System.out.println();
+				System.out.println("--> ID: \"" + id + "\" deleted successful!");
+				System.out.println();
+			} else {
+				System.out.println();
+				System.out.println("Deletion of ID: " + id + " not successful");
+			}
+			scanner.nextLine();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		scanner.nextLine();
 	}
 
 	private void removeAll() {
@@ -210,7 +226,13 @@ public class Menu implements Closeable {
 	}
 
 	private void getAllPerson() {
-		List<Person> personlist = personRepo.getAll();
+		List<Person> personlist = null;
+		try {
+			personlist = personRepo.getAll();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if (!personlist.isEmpty()) {
 			System.out.println("###########################################################");
 			System.out.println("#   \tID \tSalu \tFirstname \tLastname");
@@ -225,6 +247,7 @@ public class Menu implements Closeable {
 	}
 
 	private boolean getById() {
+		// private - Scanner for new person
 		String input;
 		System.out.println("Please enter ID to show: ");
 		input = scanner.nextLine();
@@ -236,8 +259,8 @@ public class Menu implements Closeable {
 				System.out.println("###########################################################");
 				System.out.println("#   \tID \tSalu \tFirstname \tLastname");
 				System.out.println("#----------------------------------------------------------");
-				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname()
-				+ "\t\t" + p.getLastname());
+				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname() + "\t\t"
+						+ p.getLastname());
 			}
 			return true;
 		} catch (Exception e) {
@@ -259,7 +282,6 @@ public class Menu implements Closeable {
 	}
 
 	private void inputTestdata(String firstname, String lastname, Salutation salutation) {
-
 		System.out.println();
 
 		try {
@@ -275,9 +297,11 @@ public class Menu implements Closeable {
 		} catch (NullPointerException re) {
 			System.out.println("Something went wrong - " + re.getMessage());
 			inputPerson();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-
 
 	@Override
 	public void close() throws IOException {
