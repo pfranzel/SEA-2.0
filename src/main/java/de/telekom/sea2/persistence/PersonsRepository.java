@@ -21,7 +21,7 @@ public class PersonsRepository {
 	public boolean create(Person p) {
 
 		String sql = "SELECT id FROM persons ORDER BY id DESC LIMIT 1";
-		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			resultSet.next();
 			System.out.println("lastId: " + resultSet.getInt("id"));
 			id = resultSet.getInt("id") + 1;
@@ -31,7 +31,7 @@ public class PersonsRepository {
 		}
 
 		sql = "INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)";
-		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)){
+		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)) {
 			p.setId(id);
 			preparedStatement.setLong(1, p.getId());
 			preparedStatement.setByte(2, p.getSalutation().toByte());
@@ -47,9 +47,9 @@ public class PersonsRepository {
 	}
 
 	public boolean update(Person p) {
-		
+
 		String sql = "UPDATE persons SET salutation=?, firstname=?, lastname=? WHERE id=?";
-		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)){
+		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)) {
 			preparedStatement.setLong(4, p.getId());
 			preparedStatement.setByte(1, p.getSalutation().toByte());
 			preparedStatement.setString(2, p.getFirstname());
@@ -60,8 +60,8 @@ public class PersonsRepository {
 			System.out.println("Delete failed: " + e);
 			System.out.println(e.getLocalizedMessage());
 			e.printStackTrace();
-			}
-		
+		}
+
 		return false;
 	}
 
@@ -80,7 +80,7 @@ public class PersonsRepository {
 			System.out.println("Delete failed: " + e);
 			System.out.println(e.getLocalizedMessage());
 			e.printStackTrace();
-}
+		}
 		return false;
 	}
 
@@ -91,9 +91,9 @@ public class PersonsRepository {
 	}
 
 	public boolean deleteAll() {
-		
+
 		String sql = "TRUNCATE TABLE persons";
-		
+
 		try {
 			mydbconn.prepareStatement(sql).executeQuery();
 		} catch (Exception e) {
@@ -106,7 +106,7 @@ public class PersonsRepository {
 
 		String sql = "SELECT * FROM persons WHERE id = " + id;
 
-		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			while (resultSet.next()) {
 				Person p = new Person(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4),
 						Salutation.fromByte(resultSet.getByte(2)));
@@ -122,7 +122,7 @@ public class PersonsRepository {
 
 		String sql = "select count(*) AS total FROM persons";
 
-		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			resultSet.next();
 			System.out.println("Size: " + resultSet.getInt("total"));
 		} catch (Exception e) {
@@ -134,7 +134,7 @@ public class PersonsRepository {
 	public ArrayList<Person> getAll() {
 
 		String sql = "select * from persons";
-		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			ArrayList<Person> plist = new ArrayList<Person>();
 			while (resultSet.next()) {
 				plist.add(new Person(resultSet.getLong(1), resultSet.getString(3), resultSet.getString(4),

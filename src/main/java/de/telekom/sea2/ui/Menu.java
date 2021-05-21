@@ -30,7 +30,7 @@ public class Menu implements Closeable {
 	}
 
 	public void keepAsking() {
-		// public - hällt die Schleife bis zum Abbruch am Leben
+		// public - keeps the loop running until abort
 		do {
 			showMenu();
 			result = inputMenu();
@@ -56,11 +56,9 @@ public class Menu implements Closeable {
 		System.out.println("* (q) Quit                            *");
 		System.out.println("*                                     *");
 		System.out.println("***************************************");
-//		keepAsking(result);
 	}
 
 	private void checkMenu(String input) {
-		// private - case evaluation
 		switch (input) {
 		case "1":
 			if (addActive == false) {
@@ -150,7 +148,6 @@ public class Menu implements Closeable {
 	}
 
 	private void inputPerson() {
-		// private - Scanner for new person
 		String firstname;
 		String lastname;
 		Salutation salutation = null;
@@ -162,7 +159,6 @@ public class Menu implements Closeable {
 			salutation = Salutation.fromString(scanner.nextLine());
 		} catch (IllegalArgumentException e) {
 			System.out.println("Form not valid - please use format as <f/m/d>");
-//			inputPerson();
 		}
 		System.out.println("Please enter the firstname: ");
 		firstname = scanner.nextLine();
@@ -175,7 +171,6 @@ public class Menu implements Closeable {
 			} else if (lastname.isEmpty()) {
 				throw new NullPointerException("Lastname cannot be blank.");
 			} else {
-				System.out.println("I was Heeeeeeeerrrrrreeeee!!!!!");
 				Person p = new Person(firstname, lastname, salutation);
 				personRepo.create(p);
 				System.out.println("You added \"" + salutation + " " + firstname + " " + lastname + "\" to the list");
@@ -230,7 +225,6 @@ public class Menu implements Closeable {
 	}
 
 	private boolean getById() {
-		// private - Scanner for new person
 		String input;
 		System.out.println("Please enter ID to show: ");
 		input = scanner.nextLine();
@@ -261,11 +255,10 @@ public class Menu implements Closeable {
 		inputTestdata("Peter", "Franzel", Salutation.MR);
 		inputTestdata("Magda", "Franzel", Salutation.MRS);
 		inputTestdata("Hans", "Wurst", Salutation.MR);
-		inputTestdata("Dagobert", "Duck", Salutation.OTHER);
+		inputTestdata("Donald", "Duck", Salutation.OTHER);
 	}
 
 	private void inputTestdata(String firstname, String lastname, Salutation salutation) {
-		// private - Scanner for new person
 
 		System.out.println();
 
@@ -285,9 +278,6 @@ public class Menu implements Closeable {
 		}
 	}
 
-//	public void setRepo(PersonsRepository repo) {
-//		this.repo = repo; // public - gibt die Administration-DB dem Menü bekannt
-//	}
 
 	@Override
 	public void close() throws IOException {
