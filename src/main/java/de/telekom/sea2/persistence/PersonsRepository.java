@@ -54,23 +54,28 @@ public class PersonsRepository {
 	}
 
 	public boolean update(Person p) {
+		
+		sql = "UPDATE persons SET salutation=?, firstname=?, lastname=? WHERE id=?";
+
+		
 		return false;
 	}
 
 	public boolean delete(long id) {
+		
 		sql = "DELETE FROM persons WHERE id=?";
 
 		try {
-			System.out.println("IDDDDDD:" + get(id));
-//			if (get(id) == null) {
-//				System.out.println("ID " + id + " does not exist");
-//			} else {
+	//		System.out.println("IDDDDDD:" + get(id).getId());
+	//		if (get(id) != null) {
+	//			System.out.println("ID " + id + " does not exist");
+	//		} else {
 			PreparedStatement delete = dbconn.getConnection().prepareStatement(sql);
 			delete.setLong(1, id);
 			delete.execute();
 			dbconn.close();
 			return true;
-//			}
+	//		}
 		} catch (Exception e) {
 			System.out.println("Delete failed: " + e);
 		}
@@ -100,13 +105,9 @@ public class PersonsRepository {
 
 		try {
 			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
-			System.out.println();
-			System.out.println("ID\tSalutation\tFirstname\tLastname");
 			while (resultSet.next()) {
-				System.out.print(resultSet.getInt(1) + "\t");
-				System.out.print(Salutation.fromByte(resultSet.getByte(2)) + "\t\t");
-				System.out.print(resultSet.getString(3) + "\t\t");
-				System.out.println(resultSet.getString(4) + " ");
+				Person p = new Person(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4), Salutation.fromByte(resultSet.getByte(2)) );
+				return p;
 			}
 			dbconn.close();
 		} catch (Exception e) {
@@ -135,16 +136,16 @@ public class PersonsRepository {
 		sql = "select * from persons";
 		try {
 			ResultSet resultSet = dbconn.getConnection().prepareStatement(sql).executeQuery();
-			ArrayList<Person> personlist = new ArrayList<Person>();
+			ArrayList<Person> plist = new ArrayList<Person>();
 			while (resultSet.next()) {
-				personlist.add(new Person(
+				plist.add(new Person(
 						resultSet.getLong(1), 
 						resultSet.getString(3), 
 						resultSet.getString(4),
 						Salutation.fromByte(resultSet.getByte(2))));
 			}
 			dbconn.close();
-			return personlist;
+			return plist;
 		} catch (Exception e) {
 			System.out.println(e);
 		}

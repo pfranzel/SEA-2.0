@@ -90,34 +90,6 @@ public class Menu implements Closeable {
 		}
 	}
 
-	private void genTestData() {
-		inputTestdata("Rainer", "Deißler", Salutation.MR);
-		inputTestdata("Peter", "Lustig", Salutation.MR);
-		inputTestdata("Agata", "Rubin", Salutation.MRS);
-		inputTestdata("Peter", "Franzel", Salutation.MR);
-	}
-
-	private void inputTestdata(String firstname, String lastname, Salutation salutation) {
-		// private - Scanner for new person
-
-		System.out.println();
-
-		try {
-			if (firstname.isEmpty()) {
-				throw new NullPointerException("Firstname cannot be blank.");
-			} else if (lastname.isEmpty()) {
-				throw new NullPointerException("Lastname cannot be blank.");
-			} else {
-				Person p = new Person(firstname, lastname, salutation);
-				personRepo.create(p);
-				System.out.println("You added \"" + salutation + " " + firstname + " " + lastname + "\" to the list");
-			}
-		} catch (NullPointerException re) {
-			System.out.println("Something went wrong - " + re.getMessage());
-			inputPerson();
-		}
-	}
-
 	private void inputPerson() {
 		// private - Scanner for new person
 		String firstname;
@@ -160,13 +132,10 @@ public class Menu implements Closeable {
 		getAllPerson();
 		System.out.println();
 		System.out.println("Please enter ID to delete: ");
-		int id = scanner.nextInt();
-		
-		if ()
-		
-		
+		long id = scanner.nextLong();
+
 		boolean success = personRepo.delete(id);
-		
+
 		if (success) {
 			System.out.println();
 			System.out.println("--> ID: \"" + id + "\" deleted successful!");
@@ -189,7 +158,9 @@ public class Menu implements Closeable {
 	private void getAllPerson() {
 		List<Person> personlist = personRepo.getAll();
 		if (!personlist.isEmpty()) {
-			System.out.println("### \tID \tSalu \tFirstname \tLastname");
+			System.out.println("###########################################################");
+			System.out.println("#   \tID \tSalu \tFirstname \tLastname");
+			System.out.println("#----------------------------------------------------------");
 			for (Person item : personlist) {
 				System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname()
 						+ "\t\t" + item.getLastname());
@@ -207,15 +178,49 @@ public class Menu implements Closeable {
 		int id = Integer.parseInt(input);
 
 		try {
-//			System.out.println("You selected  ID - " + id);
-//			Person person = (Person) personRepo.get(id);
-			personRepo.get(id);
+			Person p = personRepo.get(id);
+			if (p.getFirstname() != null) {
+				System.out.println("###########################################################");
+				System.out.println("#   \tID \tSalu \tFirstname \tLastname");
+				System.out.println("#----------------------------------------------------------");
+				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname()
+				+ "\t\t" + p.getLastname());
+			}
 			return true;
 		} catch (Exception e) {
-			System.out.println("Your requested ID - " + id + " - does not exist - please check!");
+			System.out.println("###########################################################");
+			System.out.println("#Your requested ID - " + id + " - does not exist! \n# please check!");
 			// getById();
 		}
 		return false;
+	}
+
+	private void genTestData() {
+		inputTestdata("Rainer", "Deißler", Salutation.MR);
+		inputTestdata("Peter", "Lustig", Salutation.MR);
+		inputTestdata("Agata", "Rubin", Salutation.MRS);
+		inputTestdata("Peter", "Franzel", Salutation.MR);
+	}
+
+	private void inputTestdata(String firstname, String lastname, Salutation salutation) {
+		// private - Scanner for new person
+
+		System.out.println();
+
+		try {
+			if (firstname.isEmpty()) {
+				throw new NullPointerException("Firstname cannot be blank.");
+			} else if (lastname.isEmpty()) {
+				throw new NullPointerException("Lastname cannot be blank.");
+			} else {
+				Person p = new Person(firstname, lastname, salutation);
+				personRepo.create(p);
+				System.out.println("You added \"" + salutation + " " + firstname + " " + lastname + "\" to the list");
+			}
+		} catch (NullPointerException re) {
+			System.out.println("Something went wrong - " + re.getMessage());
+			inputPerson();
+		}
 	}
 
 //	public void setRepo(PersonsRepository repo) {
