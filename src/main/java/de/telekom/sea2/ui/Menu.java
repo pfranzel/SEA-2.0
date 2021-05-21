@@ -44,11 +44,12 @@ public class Menu implements Closeable {
 		System.out.println("***************** Menu **************** ");
 		System.out.println("*                                     * ");
 		if (addActive == true)
-			System.out.println("* (1) Add Person                      *");
+			System.out.println("* (1) Add person                      *");
 		System.out.println("* (2) Search person by ID             *");
 		System.out.println("* (3) List all persons                *");
 		System.out.println("* (4) Delete by ID                    *");
 		System.out.println("* (5) Delete all (truncate table)     *");
+		System.out.println("* (6) Update person by ID             *");
 		System.out.println("*                                     *");
 		System.out.println("* (9) Generate Testdata               *");
 		System.out.println("*                                     *");
@@ -80,6 +81,9 @@ public class Menu implements Closeable {
 		case "5":
 			removeAll();
 			break;
+		case "6":
+			updatePerson();
+			break;
 		case "9":
 			genTestData();
 			break;
@@ -88,6 +92,61 @@ public class Menu implements Closeable {
 		default:
 			System.out.println("\n U_ERROR: Wrong input - please repeat \n");
 		}
+	}
+
+	private void updatePerson() {
+		String firstname;
+		String lastname;
+		Salutation salutation = null;
+		Person p = null;
+		long id ;
+
+		System.out.println();
+		
+		try {
+			System.out.println("Which Person/ID you want to update?");
+			System.out.println("Please enter ID: ");
+	//		long id = scanner.nextLong();    // shit - newline keeps in the buffer and next nextLine failes...
+			id = Long.parseLong(scanner.nextLine());
+			 p = personRepo.get(id);
+			if (p.getFirstname() != null) {
+				System.out.println("###########################################################");
+				System.out.println("# You selected:                                           #");
+				System.out.println("#                                                         #");
+				System.out.println("#   \tID \tSalu \tFirstname \tLastname");
+				System.out.println("#----------------------------------------------------------");
+				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname()
+				+ "\t\t" + p.getLastname());
+			}
+		} catch (IllegalArgumentException e) {
+			System.out.println("Format not valid - please use numeric format");
+			e.printStackTrace();
+		} 
+
+		try {
+			System.out.println("Please enter new salutation (m/f/d): ");
+			salutation = Salutation.fromString(scanner.nextLine());
+			System.out.println("Please enter the firstname: ");
+				firstname = scanner.nextLine();
+			System.out.println("Please enter the lastame: ");
+				lastname = scanner.nextLine();
+			if (salutation.toString().isEmpty()) {
+				throw new NullPointerException("Salutation cannot be blank.");
+			} else if (firstname.isEmpty()) {
+				throw new NullPointerException("Firstname cannot be blank.");
+			} else if (lastname.isEmpty()) {
+				throw new NullPointerException("Lastname cannot be blank.");
+			} else {
+				p.setFirstname(firstname);
+				p.setLastname(lastname);
+				p.setSalutation(salutation);			
+				personRepo.update(p);
+				System.out.println("You added \"" + salutation + " " + firstname + " " + lastname + "\" to the list");
+			}
+		} catch (Exception npe) {
+			System.out.println("Something went wrong - " + npe.getMessage());
+			npe.printStackTrace();
+		}		
 	}
 
 	private void inputPerson() {
@@ -200,6 +259,9 @@ public class Menu implements Closeable {
 		inputTestdata("Peter", "Lustig", Salutation.MR);
 		inputTestdata("Agata", "Rubin", Salutation.MRS);
 		inputTestdata("Peter", "Franzel", Salutation.MR);
+		inputTestdata("Magda", "Franzel", Salutation.MRS);
+		inputTestdata("Hans", "Wurst", Salutation.MR);
+		inputTestdata("Dagobert", "Duck", Salutation.OTHER);
 	}
 
 	private void inputTestdata(String firstname, String lastname, Salutation salutation) {

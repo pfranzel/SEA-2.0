@@ -47,8 +47,21 @@ public class PersonsRepository {
 	}
 
 	public boolean update(Person p) {
+		
 		String sql = "UPDATE persons SET salutation=?, firstname=?, lastname=? WHERE id=?";
-
+		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)){
+			preparedStatement.setLong(4, p.getId());
+			preparedStatement.setByte(1, p.getSalutation().toByte());
+			preparedStatement.setString(2, p.getFirstname());
+			preparedStatement.setString(3, p.getLastname());
+			preparedStatement.execute();
+			preparedStatement.close();
+		} catch (Exception e) {
+			System.out.println("Delete failed: " + e);
+			System.out.println(e.getLocalizedMessage());
+			e.printStackTrace();
+			}
+		
 		return false;
 	}
 
