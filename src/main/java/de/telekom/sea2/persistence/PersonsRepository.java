@@ -20,9 +20,8 @@ public class PersonsRepository {
 
 	public boolean create(Person p) {
 
-		try {
-
-			ResultSet resultSet = mydbconn.prepareStatement("SELECT id FROM persons ORDER BY id DESC LIMIT 1").executeQuery();
+		String sql = "SELECT id FROM persons ORDER BY id DESC LIMIT 1";
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
 			resultSet.next();
 			System.out.println("lastId: " + resultSet.getInt("id"));
 			id = resultSet.getInt("id") + 1;
@@ -31,9 +30,8 @@ public class PersonsRepository {
 			id = 0;
 		}
 
-		try {
-
-			PreparedStatement preparedStatement = mydbconn.prepareStatement("INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)");
+		sql = "INSERT INTO persons (id, salutation, firstname, lastname) VALUES ( ?, ?, ?, ?)";
+		try (PreparedStatement preparedStatement = mydbconn.prepareStatement(sql)){
 			p.setId(id);
 			preparedStatement.setLong(1, p.getId());
 			preparedStatement.setByte(2, p.getSalutation().toByte());
@@ -95,8 +93,7 @@ public class PersonsRepository {
 
 		String sql = "SELECT * FROM persons WHERE id = " + id;
 
-		try {
-			ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery();
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
 			while (resultSet.next()) {
 				Person p = new Person(resultSet.getInt(1), resultSet.getString(3), resultSet.getString(4),
 						Salutation.fromByte(resultSet.getByte(2)));
@@ -112,8 +109,7 @@ public class PersonsRepository {
 
 		String sql = "select count(*) AS total FROM persons";
 
-		try {
-			ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery();
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
 			resultSet.next();
 			System.out.println("Size: " + resultSet.getInt("total"));
 		} catch (Exception e) {
@@ -125,8 +121,7 @@ public class PersonsRepository {
 	public ArrayList<Person> getAll() {
 
 		String sql = "select * from persons";
-		try {
-			ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery();
+		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()){
 			ArrayList<Person> plist = new ArrayList<Person>();
 			while (resultSet.next()) {
 				plist.add(new Person(resultSet.getLong(1), resultSet.getString(3), resultSet.getString(4),
