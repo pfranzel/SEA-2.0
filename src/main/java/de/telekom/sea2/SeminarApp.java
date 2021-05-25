@@ -8,7 +8,6 @@ import de.telekom.sea2.ui.Menu;
 
 class SeminarApp {
 
-//	private DBConnect dbconn;
 	private PersonsRepository personRepo;
 
 	public void run(String[] args) {
