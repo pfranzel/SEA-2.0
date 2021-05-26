@@ -88,7 +88,7 @@ public class Menu implements Closeable {
 			genTestData();
 			break;
 		case "q":
-			break;
+				;
 		default:
 			System.out.println("\n U_ERROR: Wrong input - please repeat \n");
 		}
