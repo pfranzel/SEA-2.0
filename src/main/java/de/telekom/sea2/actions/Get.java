@@ -1,32 +1,23 @@
 package de.telekom.sea2.actions;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 import de.telekom.sea2.model.Person;
 import de.telekom.sea2.persistence.PersonsRepository;
 
 public class Get {
 	
-	public void getAllPerson(PersonsRepository personRepo) {
-		List<Person> personlist = null;
+	public ArrayList<Person> getAllPerson(PersonsRepository personRepo) {
+		
 		try {
-			personlist = personRepo.getAll();
-//			System.out.println("getAllPerson: --> " + personRepo);
+			ArrayList<Person> plist;
+			plist = personRepo.getAll();
+			return plist;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		if (!personlist.isEmpty()) {
-//			System.out.println("###########################################################");
-//			System.out.println("#   \tID \tSalu \tFirstname \tLastname");
-//			System.out.println("#----------------------------------------------------------");
-			for (Person item : personlist) {
-//				System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname()
-//						+ "\t\t" + item.getLastname());
-			}
-		} else {
-			System.out.println("The current Table has no entries!");
-		}
+		return null;
 	}
 	
 	public Person getById(PersonsRepository personRepo, long id) {
@@ -38,13 +29,13 @@ public class Get {
 
 		try {
 			Person p = personRepo.get(id);
-			if (p.getFirstname() != null) {
+/*			if (p.getFirstname() != null) {
 				System.out.println("###########################################################");
 				System.out.println("#   \tID \tSalu \tFirstname \tLastname");
 				System.out.println("#----------------------------------------------------------");
 				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname() + "\t\t"
 						+ p.getLastname());
-			}
+			} */
 			return p;
 		} catch (Exception e) {
 			System.out.println("###########################################################");

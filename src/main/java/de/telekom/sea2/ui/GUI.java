@@ -2,20 +2,17 @@ package de.telekom.sea2.ui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Closeable;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
@@ -42,14 +39,13 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 	public static JButton listB;
 	public static JButton deleteB;
 	public static JButton quitB;
-	public static JTable table;
+	private static JTable table;
+    private static DefaultTableModel model = new DefaultTableModel();
+
 	private boolean addActive = true;
-//	public static Object[][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" }, { "1", "Dummy1", "Dummy1", "Dummy1" }, { "2", "Dummy2", "Dummy2", "Dummy2" } };
-	public static Object[][] tabledata;
-	
 	
 	private static String[] columnNames = { "ID", "Salutation", "Firstname", "Lastname" };
-	
+
 	public GUI(PersonsRepository personRepo) throws Exception {
 		super("MY First Gui / Seminar-Administration");
 
@@ -67,8 +63,6 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		quitB = new JButton("Quit");
 
 //		String[] columnNames = { "ID", "Salutation", "Firstname", "Lastname" };
-
-
 
 		label = new JLabel("Total Number persons: " + personRepo.getSize());
 		panel2.add(label);
@@ -123,14 +117,24 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 
 	}
 
-	
 	public static void createTable(Person p) throws ClassNotFoundException, SQLException {
 
-		Object [][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" },{p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() }};
-		
-		if (table == null) {
-				table = new JTable(tabledata, columnNames);
+		if (p == null) {
+			model.addRow(columnNames);
+			table.setModel(model);
+			Object[][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" } };
+			table = new JTable(tabledata, columnNames);
+			panel3.add(table);
+
+		} else if (table == null && p != null) {
+			model.addRow(columnNames);
+
+			Object[][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" },
+					{ p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() } };
+			table = new JTable(tabledata, columnNames);
 		} else {
+			panel3.remove(table);
+
 			recreateTable(p);
 		}
 
@@ -138,25 +142,19 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		table.setLayout(new BorderLayout());
 		table.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		table.setCellSelectionEnabled(false);
-//		table.add(table, BorderLayout.CENTER);
-//		table.setVisible(true);
-//      table.setBounds(300, 20, 170, 25);
 		panel3.add(table);
-
 	}
+
 	public static void recreateTable(Person p) throws ClassNotFoundException, SQLException {
-//		DefaultTableModel model = (DefaultTableModel) table.getModel();
-//		model.setRowCount(0);
 		panel3.remove(table);
 		table = null;
-		Object [][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" },{p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() }};
+		Object[][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" },
+				{ p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() } };
 		table = new JTable(tabledata, columnNames);
-		
-		
-		
 		table.setFillsViewportHeight(true);
 		table.setLayout(new BorderLayout());
 		table.add(table.getTableHeader(), BorderLayout.PAGE_START);
+		table.setCellSelectionEnabled(false);
 		panel3.add(table);
 	}
 
