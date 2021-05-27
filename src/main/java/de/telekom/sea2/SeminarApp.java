@@ -14,14 +14,15 @@ class SeminarApp {
 
 		System.out.println(this.getClass().getName() + ": Start");
 
-		try (GUI gui = new GUI()) {
+		try {
 			DBConnect dbconn = new DBConnect();
 			Connection mydbconn = dbconn.getConnection();
 			personRepo = new PersonsRepository(mydbconn);
-			gui.setRepository(personRepo);
-			
-			// dbconn.close();     // needs to be implemented... 
-			
+			GUI gui = new GUI(personRepo);
+//			gui.setRepository(personRepo);
+
+			// dbconn.close(); // needs to be implemented...
+
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();

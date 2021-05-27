@@ -8,8 +8,6 @@ import de.telekom.sea2.persistence.PersonsRepository;
 
 public class Get {
 	
-	
-	
 	public void getAllPerson(PersonsRepository personRepo) {
 		List<Person> personlist = null;
 		try {
@@ -19,19 +17,19 @@ public class Get {
 			e.printStackTrace();
 		}
 		if (!personlist.isEmpty()) {
-			System.out.println("###########################################################");
-			System.out.println("#   \tID \tSalu \tFirstname \tLastname");
-			System.out.println("#----------------------------------------------------------");
+//			System.out.println("###########################################################");
+//			System.out.println("#   \tID \tSalu \tFirstname \tLastname");
+//			System.out.println("#----------------------------------------------------------");
 			for (Person item : personlist) {
-				System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname()
-						+ "\t\t" + item.getLastname());
+//				System.out.println("#\t" + item.getId() + " \t" + item.getSalutation() + "\t" + item.getFirstname()
+//						+ "\t\t" + item.getLastname());
 			}
 		} else {
 			System.out.println("The current Table has no entries!");
 		}
 	}
 	
-	public boolean getById(PersonsRepository personRepo, long id) {
+	public Person getById(PersonsRepository personRepo, long id) {
 //		String input;
 //		System.out.println("Please enter ID to show: ");
 //		input = scanner.nextLine();
@@ -47,12 +45,12 @@ public class Get {
 				System.out.println("#\t" + p.getId() + " \t" + p.getSalutation() + "\t" + p.getFirstname() + "\t\t"
 						+ p.getLastname());
 			}
-			return true;
+			return p;
 		} catch (Exception e) {
 			System.out.println("###########################################################");
 			System.out.println("#Your requested ID - " + id + " - does not exist! \n# please check!");
 			// getById();
 		}
-		return false;
+		return null;
 	}
 }

@@ -12,7 +12,6 @@ import de.telekom.sea2.model.Person;
 
 public class PersonsRepository {
 
-//	private DBConnect dbconn;
 	private long id;
 	private Connection mydbconn;
 
@@ -144,8 +143,9 @@ public class PersonsRepository {
 
 		try (ResultSet resultSet = mydbconn.prepareStatement(sql).executeQuery()) {
 			resultSet.next();
-			System.out.println("Size: " + resultSet.getInt("total"));
+//			System.out.println("Size: " + resultSet.getInt("total"));
 			event.sendGetEvent();
+			return resultSet.getInt("total");
 		} catch (SQLException e) {
 			System.out.println("getSize() Exception: " + e);
 			event.sendErrEvent(e);
