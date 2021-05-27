@@ -8,7 +8,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,12 +41,14 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 	public static JButton searchB;
 	public static JButton listB;
 	public static JButton deleteB;
+	public static JButton deleteAllB;
+	public static JButton genTestB;
 	public static JButton quitB;
 	private static String[] columnNames = { "ID", "Salutation", "Firstname", "Lastname" };
 	static DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 	static JTable table = new JTable(model);
 	JScrollPane scrollPane = new JScrollPane(table);
-	
+
 	private boolean addActive = true;
 
 	public GUI(PersonsRepository personRepo) throws Exception {
@@ -64,9 +65,9 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		searchB = new JButton("Search Person");
 		listB = new JButton("List all Person");
 		deleteB = new JButton("Delete Person");
+		deleteAllB = new JButton("Delete All");
+		genTestB = new JButton("Generate Testdata");
 		quitB = new JButton("Quit");
-
-//		String[] columnNames = { "ID", "Salutation", "Firstname", "Lastname" };
 
 		label = new JLabel("Total Number persons: " + personRepo.getSize());
 		panel2.add(label);
@@ -83,11 +84,14 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		panel1.add(searchB);
 		panel1.add(listB);
 		panel1.add(deleteB);
+		panel1.add(deleteAllB);
+		panel1.add(genTestB);
 		panel1.add(quitB);
 
 		id = new JTextField(20);
 		id.setBounds(120, 20, 20, 20);
 		id.setName("ID");
+		id.setToolTipText("Enter the ID here");
 		panel2.add(id);
 
 		label = new JLabel("Message: " + message);
@@ -116,7 +120,9 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		searchB.addActionListener(handler);
 		listB.addActionListener(handler);
 		deleteB.addActionListener(handler);
+		deleteAllB.addActionListener(handler);
 		quitB.addActionListener(handler);
+		genTestB.addActionListener(handler);
 		id.addActionListener(handler);
 		
 		model.setRowCount(0);
@@ -139,14 +145,14 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 			System.out.println("HHHHHHHHH - 2");
 			Object[] data = { p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() };
 			model.addRow(data);
-		} 
+		}
 	}
 
 	public static void createTable(ArrayList<Person> plist) throws ClassNotFoundException, SQLException {
 		System.out.println("HHHHHHHHH - 5");
-		
+
 		model.setRowCount(1);
-		
+
 		if (plist == null) {
 			System.out.println("HHHHHHHHH - 6");
 			table.setModel(model);
@@ -158,7 +164,6 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 				Salutation salutation = item.getSalutation();
 				String firstname = item.getFirstname();
 				String lastname = item.getLastname();
-//				System.out.println("Strings: " + id + " " + salutation + " " + firstname + " " + lastname);
 				Object[] data = { id, salutation, firstname, lastname };
 				model.addRow(data);
 			}
