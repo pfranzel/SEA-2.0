@@ -46,15 +46,14 @@ public class Handler implements ActionListener {
 			} catch (Exception e) {
 				GUI.label.setText("Wrong input - please enter an numeric value");
 				e.printStackTrace();
-			}
+			} 
 ///////////////////////////////////////////////////
 			
 		} else if (event.getSource() == GUI.listB) {
 			string = String.format("listB pressed");
 			System.out.println(string);
 			try {
-				Get getall = new Get();
-				getall.getAllPerson(personRepo);
+				GUI.createTable(personRepo.getAll());
 
 			} catch (Exception e) {
 //				System.out.println("Wrong input - please enter an numeric value");
