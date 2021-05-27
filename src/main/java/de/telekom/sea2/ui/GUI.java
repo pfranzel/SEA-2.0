@@ -128,13 +128,11 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 
 		} else if (table == null && p != null) {
 			model.addRow(columnNames);
-
 			Object[][] tabledata = { { "0", "Dummy0", "Dummy0", "Dummy0" },
 					{ p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() } };
 			table = new JTable(tabledata, columnNames);
 		} else {
 			panel3.remove(table);
-
 			recreateTable(p);
 		}
 
