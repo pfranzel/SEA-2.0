@@ -26,16 +26,13 @@ import de.telekom.sea2.persistence.PersonsRepository;
 
 public class GUI extends JFrame implements Closeable, ActionListener {
 
+	
+	
 	public PersonsRepository personRepo;
 	public Handler handler;
 	public static JTextField id;
 	public static String message;
-	public static JLabel label;
-	private static JFrame frame;
-	private static JPanel panel1;
-	private static JPanel panel2;
-	private static JPanel panel3;
-	private static JPanel panel4;
+	public static JLabel messageL;
 	public static JButton addB;
 	public static JButton changeB;
 	public static JButton searchB;
@@ -44,6 +41,12 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 	public static JButton deleteAllB;
 	public static JButton genTestB;
 	public static JButton quitB;
+	
+	private static JFrame frame;
+	private static JPanel panel1;
+	private static JPanel panel2;
+	private static JPanel panel3;
+	private static JPanel panel4;
 	private static String[] columnNames = { "ID", "Salutation", "Firstname", "Lastname" };
 	static DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 	static JTable table = new JTable(model);
@@ -69,8 +72,8 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		genTestB = new JButton("Generate Testdata");
 		quitB = new JButton("Quit");
 
-		label = new JLabel("Total Number persons: " + personRepo.getSize());
-		panel2.add(label);
+		messageL = new JLabel("Total Number persons: " + personRepo.getSize());
+		panel2.add(messageL);
 
 		panel1.setLayout(new GridLayout(0, 1));
 		panel2.setLayout(new GridLayout(0, 1));
@@ -94,8 +97,8 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		id.setToolTipText("Enter the ID here");
 		panel2.add(id);
 
-		label = new JLabel("Message: " + message);
-		panel4.add(label);
+		messageL = new JLabel("Message: " + message);
+		panel4.add(messageL);
 
 		panel1.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		panel2.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -140,30 +143,25 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		model.setRowCount(1);
 
 		if (p == null) {
-			System.out.println("HHHHHHHHH - 1");
 		} else if (p != null) {
-			System.out.println("HHHHHHHHH - 2");
-			Object[] data = { p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() };
-			model.addRow(data);
+			Object[] obj = { p.getId(), p.getSalutation(), p.getFirstname(), p.getLastname() };
+			model.addRow(obj);
 		}
 	}
 
 	public static void createTable(ArrayList<Person> plist) throws ClassNotFoundException, SQLException {
-		System.out.println("HHHHHHHHH - 5");
 
 		model.setRowCount(1);
 
 		if (plist == null) {
-			System.out.println("HHHHHHHHH - 6");
 			table.setModel(model);
 			model.addRow(columnNames);
 		} else if (plist != null) {
-			System.out.println("HHHHHHHHH - 7");
-			for (Person item : plist) {
-				long id = item.getId();
-				Salutation salutation = item.getSalutation();
-				String firstname = item.getFirstname();
-				String lastname = item.getLastname();
+			for (Person pItem : plist) {
+				long id = pItem.getId();
+				Salutation salutation = pItem.getSalutation();
+				String firstname = pItem.getFirstname();
+				String lastname = pItem.getLastname();
 				Object[] data = { id, salutation, firstname, lastname };
 				model.addRow(data);
 			}
