@@ -19,7 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
-import de.telekom.sea2.handler.Handler;
+import de.telekom.sea2.eventHandler.EventHandler;
 import de.telekom.sea2.lookup.Salutation;
 import de.telekom.sea2.model.Person;
 import de.telekom.sea2.persistence.PersonsRepository;
@@ -29,7 +29,7 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 	
 	
 	public PersonsRepository personRepo;
-	public Handler handler;
+	public EventHandler eventHandler;
 	public static JTextField id;
 	public static String message;
 	public static JLabel messageL;
@@ -49,9 +49,9 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 	private static JPanel panel4;
 	private static String[] columnNames = { "ID", "Salutation", "Firstname", "Lastname" };
 	static DefaultTableModel model = new DefaultTableModel(columnNames, 0);
-	static JTable table = new JTable(model);
-	JScrollPane scrollPane = new JScrollPane(table);
-
+	
+	private static JTable table1 = new JTable(model);
+    
 	private boolean addActive = true;
 
 	public GUI(PersonsRepository personRepo) throws Exception {
@@ -94,6 +94,7 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		id = new JTextField(20);
 		id.setBounds(120, 20, 20, 20);
 		id.setName("ID");
+		
 		id.setToolTipText("Enter the ID here");
 		panel2.add(id);
 
@@ -109,33 +110,46 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		frame.setTitle(getTitle());
 		frame.add(panel1, BorderLayout.WEST);
 		frame.add(panel2, BorderLayout.CENTER);
-		frame.add(panel3, BorderLayout.EAST);
 		frame.add(panel4, BorderLayout.SOUTH);
 //		pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		handler = new Handler();
-		handler.setRepository(personRepo);
-
-		addB.addActionListener(handler);
-		changeB.addActionListener(handler);
-		searchB.addActionListener(handler);
-		listB.addActionListener(handler);
-		deleteB.addActionListener(handler);
-		deleteAllB.addActionListener(handler);
-		quitB.addActionListener(handler);
-		genTestB.addActionListener(handler);
-		id.addActionListener(handler);
-		
 		model.setRowCount(0);
-		table.setModel(model);
+		table1.setModel(model);
 		model.addRow(columnNames);
-		panel3.add(table);
-		table.setFillsViewportHeight(true);
-		table.setLayout(new BorderLayout());
-		table.add(table.getTableHeader(), BorderLayout.PAGE_START);
-		table.setCellSelectionEnabled(false);
+		
+////////////
+	
+		JScrollPane scrollPane = new JScrollPane(panel3);
+	//	scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	//	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		frame.add(table1, BorderLayout.EAST);
+		frame.add(scrollPane, BorderLayout.EAST);
+		panel3.setName("myname");
+		panel3.add(table1);
+	
+///////////
+		
+		table1.setFillsViewportHeight(true);
+		table1.setLayout(new BorderLayout());
+		table1.add(table1.getTableHeader(), BorderLayout.PAGE_START);
+		table1.setCellSelectionEnabled(false);
+		
+///////////
+		
+		eventHandler = new EventHandler();
+		eventHandler.setRepository(personRepo);
+
+		addB.addActionListener(eventHandler);
+		changeB.addActionListener(eventHandler);
+		searchB.addActionListener(eventHandler);
+		listB.addActionListener(eventHandler);
+		deleteB.addActionListener(eventHandler);
+		deleteAllB.addActionListener(eventHandler);
+		quitB.addActionListener(eventHandler);
+		genTestB.addActionListener(eventHandler);
+		id.addActionListener(eventHandler);		
 	}
 
 	public static void createTable(Person p) throws ClassNotFoundException, SQLException {
@@ -154,7 +168,7 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		model.setRowCount(1);
 
 		if (plist == null) {
-			table.setModel(model);
+			table1.setModel(model);
 			model.addRow(columnNames);
 		} else if (plist != null) {
 			for (Person pItem : plist) {

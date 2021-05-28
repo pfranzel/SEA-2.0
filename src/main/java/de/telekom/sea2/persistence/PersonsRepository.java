@@ -34,8 +34,8 @@ public class PersonsRepository {
 			System.out.println("lastId: " + resultSet.getInt("id"));
 			id = resultSet.getInt("id") + 1;
 		} catch (Exception e) {
-			System.out.println("It seems you are the first in the list - beginning with ID 0 ");
-			id = 0;
+			System.out.println("It seems you are the first in the list - beginning with ID 1 ");
+			id = 1;
 			event.sendErrEvent(e);
 		}
 

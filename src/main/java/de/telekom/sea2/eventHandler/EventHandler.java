@@ -1,9 +1,8 @@
-package de.telekom.sea2.handler;
+package de.telekom.sea2.eventHandler;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -11,9 +10,8 @@ import de.telekom.sea2.lookup.Salutation;
 import de.telekom.sea2.model.Person;
 import de.telekom.sea2.persistence.PersonsRepository;
 import de.telekom.sea2.ui.GUI;
-import de.telekom.sea2.ui.Menu;
 
-public class Handler implements ActionListener {
+public class EventHandler implements ActionListener {
 	public PersonsRepository personRepo;
 
 	public void setRepository(PersonsRepository repo) {
@@ -71,12 +69,18 @@ public class Handler implements ActionListener {
 		} else if (event.getSource() == GUI.deleteB) {
 			string = String.format("deleteB pressed");
 			System.out.println(string);
+			long id = -1;
 			try {
-				long id = Long.parseLong(GUI.id.getText());
-				GUI.messageL.setText("Deleted ID: " + id);
+				id = Long.parseLong(GUI.id.getText());
+				if (personRepo.getPerson(id).getId() == id) {
 				personRepo.delete(id);
+				GUI.messageL.setText("Deleted ID: " + id);
 				GUI.createTable(personRepo.getAll());
-
+				} else {
+					throw new NullPointerException("Person with ID: " + id + " not deleted as not existing in the list");
+				}
+			} catch (NullPointerException e) {
+				GUI.messageL.setText("Person with ID: " + id + " not deleted as not existing in the list");
 			} catch (Exception e) {
 				GUI.messageL.setText("Wrong input - please enter an numeric value");
 				e.printStackTrace();
@@ -135,7 +139,6 @@ public class Handler implements ActionListener {
 			System.out.println("Something went wrong - " + re.getMessage());
 //			inputPerson();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
