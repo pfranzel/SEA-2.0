@@ -4,29 +4,32 @@ import java.sql.Connection;
 
 import de.telekom.sea2.persistence.DBConnect;
 import de.telekom.sea2.persistence.PersonsRepository;
-import de.telekom.sea2.ui.Menu;
+import de.telekom.sea2.ui.GUI;
 
 class SeminarApp {
 
-	private PersonsRepository personRepo;
+	protected PersonsRepository personRepo;
 
 	public void run(String[] args) {
 
 		System.out.println(this.getClass().getName() + ": Start");
 
-		try (Menu menu = new Menu()) {
-
+		try {
 			DBConnect dbconn = new DBConnect();
 			Connection mydbconn = dbconn.getConnection();
-			menu.open();
 			personRepo = new PersonsRepository(mydbconn);
-			menu.setRepository(personRepo);
-			menu.keepAsking();
-			dbconn.close();
-			
+			GUI gui = new GUI(personRepo);
+//			gui.setRepository(personRepo);
+
+			// dbconn.close(); // needs to be implemented...
+
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
+	}
+
+	public PersonsRepository getPersonRepo() {
+		return personRepo;
 	}
 }
