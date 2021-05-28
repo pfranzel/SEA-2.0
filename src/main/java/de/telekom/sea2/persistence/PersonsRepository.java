@@ -81,7 +81,7 @@ public class PersonsRepository {
 		String sql;
 		sql = "DELETE FROM persons WHERE id=?";
 
-		if (get(id) == null) {
+		if (getPerson(id) == null) {
 			return false;
 		}
 		try (PreparedStatement delete = mydbconn.prepareStatement(sql)) {
@@ -119,7 +119,7 @@ public class PersonsRepository {
 		return true;
 	}
 
-	public Person get(long id) throws SQLException {
+	public Person getPerson(long id) throws SQLException {
 
 		String sql = "SELECT * FROM persons WHERE id = " + id;
 

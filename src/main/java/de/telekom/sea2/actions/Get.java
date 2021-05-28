@@ -28,7 +28,7 @@ public class Get {
 //		int id = Integer.parseInt(input);
 
 		try {
-			Person p = personRepo.get(id);
+			Person p = personRepo.getPerson(id);
 /*			if (p.getFirstname() != null) {
 				System.out.println("###########################################################");
 				System.out.println("#   \tID \tSalu \tFirstname \tLastname");

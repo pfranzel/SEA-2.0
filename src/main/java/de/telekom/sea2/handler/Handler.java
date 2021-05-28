@@ -39,11 +39,12 @@ public class Handler implements ActionListener {
 			try {
 				long id = Long.parseLong(GUI.id.getText());
 				GUI.label.setText("Searched for ID: " + id);
-				GUI.createTable(personRepo.get(id));
+				GUI.createTable(personRepo.getPerson(id));
 
 			} catch (Exception e) {
 				GUI.label.setText("Wrong input - please enter an numeric value");
-				e.printStackTrace();
+		//		e.printStackTrace();
+				throw new NumberFormatException("Wrong input - please enter an numeric value");
 			}
 			
 			/// LIST ALL ///

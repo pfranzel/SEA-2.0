@@ -37,7 +37,10 @@ public class Person {
 		return firstname;
 	}
 	public void setFirstname(String firstname) {
+//		if(firstname != null)
 		this.firstname = firstname;
+//		else
+//			throw new Invalid
 	}
 	public String getLastname() {
 		return lastname;

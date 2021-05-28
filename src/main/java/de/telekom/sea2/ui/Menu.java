@@ -109,7 +109,7 @@ public class Menu implements Closeable {
 			// long id = scanner.nextLong(); // shit - newline keeps in the buffer and next
 			// nextLine failes...
 			id = Long.parseLong(scanner.nextLine());
-			p = personRepo.get(id);
+			p = personRepo.getPerson(id);
 			if (p.getFirstname() != null) {
 				System.out.println("###########################################################");
 				System.out.println("# You selected:                                           #");
@@ -254,7 +254,7 @@ public class Menu implements Closeable {
 		int id = Integer.parseInt(input);
 
 		try {
-			Person p = personRepo.get(id);
+			Person p = personRepo.getPerson(id);
 			if (p.getFirstname() != null) {
 				System.out.println("###########################################################");
 				System.out.println("#   \tID \tSalu \tFirstname \tLastname");
