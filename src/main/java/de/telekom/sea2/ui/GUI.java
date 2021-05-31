@@ -1,6 +1,7 @@
 package de.telekom.sea2.ui;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +33,8 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 	public EventHandler eventHandler;
 	public static JTextField id;
 	public static String message;
-	public static JLabel messageL;
+	public static JLabel labelMessage;
+	public static JLabel labelSize;
 	public static JButton addB;
 	public static JButton changeB;
 	public static JButton searchB;
@@ -72,9 +74,6 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		genTestB = new JButton("Generate Testdata");
 		quitB = new JButton("Quit");
 
-		messageL = new JLabel("Total Number persons: " + personRepo.getSize());
-		panel2.add(messageL);
-
 		panel1.setLayout(new GridLayout(0, 1));
 		panel2.setLayout(new GridLayout(0, 1));
 //		panel1.setSize(200, 200);
@@ -97,9 +96,11 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 		
 		id.setToolTipText("Enter the ID here");
 		panel2.add(id);
-
-		messageL = new JLabel("Message: " + message);
-		panel4.add(messageL);
+		
+		labelSize = new JLabel("Total Number persons: " + personRepo.getSize());
+		panel2.add(labelSize);
+		labelMessage = new JLabel("Message: " + message);
+		panel4.add(labelMessage);
 
 		panel1.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		panel2.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -108,10 +109,11 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 
 		frame.setSize(1000, 500);
 		frame.setTitle(getTitle());
+		labelSize.setFont(new Font("Monaco", Font.PLAIN, 20));
 		frame.add(panel1, BorderLayout.WEST);
 		frame.add(panel2, BorderLayout.CENTER);
 		frame.add(panel4, BorderLayout.SOUTH);
-//		pack();
+		pack();
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -122,8 +124,6 @@ public class GUI extends JFrame implements Closeable, ActionListener {
 ////////////
 	
 		JScrollPane scrollPane = new JScrollPane(panel3);
-	//	scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-	//	scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		frame.add(table1, BorderLayout.EAST);
 		frame.add(scrollPane, BorderLayout.EAST);
 		panel3.setName("myname");

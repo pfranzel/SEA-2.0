@@ -39,16 +39,21 @@ public class EventHandler implements ActionListener {
 			long id = -1;
 			try {
 				id = Long.parseLong(GUI.id.getText());
-				GUI.messageL.setText("Searched for ID: " + id);
+				GUI.labelMessage.setText("Searched for ID: " + id);
 				if (personRepo.getPerson(id).getId() == id) {
 					GUI.createTable(personRepo.getPerson(id));
 				} else {
 					throw new NullPointerException("Person with ID: " + id + " does not exit in the list");
 				}
 			} catch (NullPointerException e) {
-				GUI.messageL.setText("Person with ID: " + id + " is not existing in the list");
+				try {
+					GUI.createTable(personRepo.getPerson(id));
+				} catch (ClassNotFoundException | SQLException e1) {
+					e1.printStackTrace();
+				}
+				GUI.labelMessage.setText("Person with ID: " + id + " is not existing in the list");
 			} catch (Exception e) {
-				GUI.messageL.setText("Wrong input - please enter an numeric value");
+				GUI.labelMessage.setText("Wrong input - please enter an numeric value");
 				JOptionPane.showMessageDialog(null, "Wrong input - please enter an numeric value");
 				// e.printStackTrace();
 				throw new NumberFormatException("Wrong input - please enter an numeric value");
@@ -59,9 +64,9 @@ public class EventHandler implements ActionListener {
 			System.out.println(string);
 			try {
 				GUI.createTable(personRepo.getAll());
-				GUI.messageL.setText("GetAll successful");
+				GUI.labelMessage.setText("GetAll successful");
 			} catch (Exception e) {
-				GUI.messageL.setText("Something went wrong - please check");
+				GUI.labelMessage.setText("Something went wrong - please check");
 				e.printStackTrace();
 			}
 
@@ -74,15 +79,21 @@ public class EventHandler implements ActionListener {
 				id = Long.parseLong(GUI.id.getText());
 				if (personRepo.getPerson(id).getId() == id) {
 				personRepo.delete(id);
-				GUI.messageL.setText("Deleted ID: " + id);
+				GUI.labelMessage.setText("Deleted ID: " + id);
+				GUI.labelSize.setText("Total Number persons: " + personRepo.getSize());
 				GUI.createTable(personRepo.getAll());
 				} else {
 					throw new NullPointerException("Person with ID: " + id + " not deleted as not existing in the list");
 				}
 			} catch (NullPointerException e) {
-				GUI.messageL.setText("Person with ID: " + id + " not deleted as not existing in the list");
+//				try {
+//					GUI.createTable(personRepo.getPerson(id));
+//				} catch (ClassNotFoundException | SQLException e1) {
+//					e1.printStackTrace();
+//				}
+				GUI.labelMessage.setText("Person with ID: " + id + " not deleted as not existing in the list");
 			} catch (Exception e) {
-				GUI.messageL.setText("Wrong input - please enter an numeric value");
+				GUI.labelMessage.setText("Wrong input - please enter an numeric value");
 				e.printStackTrace();
 			}
 
@@ -92,9 +103,10 @@ public class EventHandler implements ActionListener {
 			System.out.println(string);
 			try {
 				personRepo.deleteAll();
-				GUI.messageL.setText("Table persons truncated");
+				GUI.labelSize.setText("Total Number persons: " + personRepo.getSize());
+				GUI.labelMessage.setText("Table persons truncated");
 			} catch (Exception e) {
-				GUI.messageL.setText("Something went wrong");
+				GUI.labelMessage.setText("Something went wrong");
 				e.printStackTrace();
 			}
 			GUI.listB.doClick();
@@ -110,7 +122,8 @@ public class EventHandler implements ActionListener {
 			inputTestdata("Magda", "Franzel", Salutation.MRS);
 			inputTestdata("Hans", "Wurst", Salutation.MR);
 			inputTestdata("Donald", "Duck", Salutation.OTHER);
-			GUI.messageL.setText("Testdata Loaded");
+			GUI.labelSize.setText("Total Number persons: " + personRepo.getSize());
+			GUI.labelMessage.setText("Testdata Loaded");
 			GUI.listB.doClick();
 
 ////////////////// QUIT /////////////////
