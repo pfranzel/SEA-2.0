@@ -7,7 +7,11 @@ public class Person {
 	private Salutation salutation;
 	private String firstname;
 	private String lastname;
+	
+	public Person() {
 
+	}
+	
 	public Person(String firstname, String lastname, Salutation salutation) {
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -52,7 +56,9 @@ public class Person {
 		return lastname;
 	}
 
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+	public void setLastname(String lastname) throws Exception {
+		if (lastname != null)
+			this.lastname = lastname;
+		else
+			throw new Exception("Lastname must not be empty");	}
 }
